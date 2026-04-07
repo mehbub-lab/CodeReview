@@ -24,10 +24,15 @@ from code_review_env.client import CodeReviewEnv
 from code_review_env.models import CodeReviewAction
 
 # ── configuration ─────────────────────────────────────────────────────────
-API_KEY = os.getenv("HF_TOKEN") or os.getenv("API_KEY") or os.getenv("OPENAI_API_KEY")
-API_BASE_URL = os.getenv("API_BASE_URL") or "https://router.huggingface.co/v1"
-MODEL_NAME = os.getenv("MODEL_NAME") or "Qwen/Qwen2.5-72B-Instruct"
-ENV_BASE_URL = os.getenv("ENV_BASE_URL") or "http://localhost:7860"
+# Mandatory variables (per submission checklist)
+API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
+MODEL_NAME = os.getenv("MODEL_NAME", "Qwen/Qwen2.5-72B-Instruct")
+HF_TOKEN = os.getenv("HF_TOKEN")
+
+# Optional – if you use from_docker_image():
+LOCAL_IMAGE_NAME = os.getenv("LOCAL_IMAGE_NAME")
+
+ENV_BASE_URL = os.getenv("ENV_BASE_URL", "http://localhost:7860")
 BENCHMARK = "code_review_env"
 
 # Per-task config
@@ -206,11 +211,11 @@ async def run_task(task_name: str, env: CodeReviewEnv, llm: OpenAI):
 
 
 async def main():
-    if not API_KEY:
-        print("[ERROR] No API key found. Set HF_TOKEN, API_KEY, or OPENAI_API_KEY.", flush=True)
+    if not HF_TOKEN:
+        print("[ERROR] No API key found. Set HF_TOKEN environment variable.", flush=True)
         sys.exit(1)
 
-    llm = OpenAI(api_key=API_KEY, base_url=API_BASE_URL)
+    llm = OpenAI(api_key=HF_TOKEN, base_url=API_BASE_URL)
 
     tasks = ["single_bug", "multi_bug", "full_review"]
     scores = {}
