@@ -1,3 +1,14 @@
+---
+title: CodeReview
+emoji: 🔍
+colorFrom: blue
+colorTo: purple
+sdk: docker
+app_port: 7860
+tags:
+  - openenv
+---
+
 # 🔍 Code Review Environment — OpenEnv
 
 An AI agent environment for automated code review. The agent reviews Python
